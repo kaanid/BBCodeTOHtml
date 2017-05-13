@@ -42,12 +42,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BBCodeFormatter.cs" />
-    <Compile Include="BBFormatterContainer.cs" />
-    <Compile Include="CodeFormatter .cs" />
-    <Compile Include="FormatterContainer.cs" />
+    <Compile Include="BBCodeFormatterContainer.cs" />
     <Compile Include="ITextFormatter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ReplacementTextFormatter.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -9,18 +9,21 @@ namespace C.CodeFormatter
 {
     public class BBCodeFormatter:ITextFormatter
     {
-        private readonly Regex regex = new Regex("\\[code=(.+?)\\]((.|\\n|\\r)+?)\\[\\/code\\]", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.Multiline);
+        private readonly Regex regex;
         
-        public BBCodeFormatter()
-        {
+        private readonly string[] arrReplacement;
+        private readonly bool isFlag;
 
+        public BBCodeFormatter(Regex _regex,string _replacement, bool _isFlag=false)
+        {
+            regex = _regex;
+            arrReplacement = _replacement.Split('|');
+            isFlag = _isFlag;
         }
 
         public string GetReplaceResult(Match match)
         {
-            string lang = match.Result("$1");
-            string body = match.Result("$2");
-            return body;
+            return match.Result(arrReplacement[0]);
         }
 
         /// <summary>
@@ -28,34 +31,22 @@ namespace C.CodeFormatter
         /// </summary>
         /// <param name="text">The format target text.</param>
         /// <returns>Returns the formatted text.</returns>
-        public virtual string Format(string text)
+        public string Format(string text)
         {
-            var match = regex.Match(text);
-            int startIndex = 0;
-            int len = text.Length;
-            string formatted = "";
+            string formatted = string.Empty;
+            
+            //<span>|</span>
+            formatted=regex.Replace(text, GetReplaceResult);
 
-            while (match.Success)
+            if (arrReplacement.Length > 1)
             {
-                if (match.Index > 0)
-                {
-                    int length = match.Index - startIndex;
-                    formatted += text.Substring(startIndex, length);
-                }
-
-                var target = text.Substring(match.Index, match.Length);
-
-                formatted += regex.Replace(target, GetReplaceResult);
-                startIndex = (match.Index + match.Length);
-                match = match.NextMatch();
+                string pattern = regex.ToString().Replace("\\","");
+                int end= pattern.IndexOf("=", 1)>=0? pattern.IndexOf("=", 1)-1:pattern.Length-2;
+                string old= "[/" + pattern.Substring(1,end)+"]";
+                formatted = formatted.Replace(old, arrReplacement[1]);
             }
 
-            if (startIndex != (len - 1))
-                formatted += text.Substring(startIndex);
-
-            if (!string.IsNullOrEmpty(formatted))
-                return formatted;
-            return text;
+            return formatted;
         }
     }
 }

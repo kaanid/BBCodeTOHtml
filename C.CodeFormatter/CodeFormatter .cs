@@ -21,7 +21,7 @@ namespace C.CodeFormatter
             isExplicitly = _isExplicitly;
         }
 
-        public string GetReplaceResult(Match match)
+        public virtual string GetReplaceResult(Match match)
         {
             return match.Result(this.replacement);
         }
